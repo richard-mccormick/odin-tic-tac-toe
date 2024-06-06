@@ -21,7 +21,9 @@ const gameController = (function(){
     
 
     const players = [createPlayer("Player 1", "O"), createPlayer("Player 2", "X")];
+
     let currentTurn = players[0];
+
     const changeTurn = () => {
         if(currentTurn === players[0]){
             currentTurn = players[1];
@@ -29,6 +31,7 @@ const gameController = (function(){
             currentTurn = players[0];
         }
     }
+
     let playBoard = gameBoard.getBoard();
 
     const winningPositions = [
@@ -73,3 +76,7 @@ const gameController = (function(){
 
     return {players, mark};
 })();
+
+//const displayController = (function() {
+
+//})();

@@ -21,6 +21,14 @@ const gameController = (function(){
     
 
     const players = [createPlayer("Player 1", "O"), createPlayer("Player 2", "X")];
+    let currentTurn = players[0];
+    const changeTurn = () => {
+        if(currentTurn === players[0]){
+            currentTurn = players[1];
+        }else{
+            currentTurn = players[0];
+        }
+    }
     let playBoard = gameBoard.getBoard();
 
     const winningPositions = [
@@ -50,16 +58,18 @@ const gameController = (function(){
     }
 
 
-    const mark = (symbol, space) => {
-        playBoard[space] = symbol;
+    const mark = (space) => {
+        playBoard[space] = currentTurn.symbol;
         if(checkWin() === true){
-            console.log("YOU WON!!!!");
+            console.log(currentTurn.name+ " WON!!!!");
             gameBoard.clearBoard();
             playBoard = gameBoard.getBoard();
+        }else{
+            changeTurn();
             console.log(playBoard);
         }
     }
     
 
-    return {players, mark, /*checkWin*/};
+    return {players, mark};
 })();

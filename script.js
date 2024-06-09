@@ -5,10 +5,10 @@ const gameBoard = (function() {
         "","","",
         "","","",
         "","",""];
+
     const getBoard = () => board;
 
     const clearBoard = () => {board = ["","","","","","","","",""]};
-
 
     return {getBoard, clearBoard};
 })();
@@ -19,10 +19,11 @@ function createPlayer(name, symbol) {
 
 const gameController = (function(){
     
-
     const players = [createPlayer("Player 1", "O"), createPlayer("Player 2", "X")];
 
     let currentTurn = players[0];
+
+    getTurn = () => currentTurn;
 
     const changeTurn = () => {
         if(currentTurn === players[0]){
@@ -69,14 +70,31 @@ const gameController = (function(){
             playBoard = gameBoard.getBoard();
         }else{
             changeTurn();
-            console.log(playBoard);
+            return currentTurn;
         }
     }
     
 
-    return {players, mark};
+    return {players, mark, getTurn};
 })();
 
-//const displayController = (function() {
+const displayController = (function(){
 
-//})();
+    const displayArray = document.querySelectorAll(".game-space");
+
+    const displayMark = (space) => {
+        if(space.textContent === ""){
+            space.textContent = gameController.getTurn().symbol;
+            gameController.mark(space.dataset.index);
+        }
+
+    }
+
+    for(const item of displayArray){
+        item.addEventListener("click", () =>{
+            displayMark(item);
+        });
+    }
+
+    return {displayArray};
+})();

@@ -22,6 +22,10 @@ const gameController = (function(){
     const players = [createPlayer("Player 1", "O"), createPlayer("Player 2", "X")];
 
     let currentTurn = players[0];
+    let turnCount = 0;
+    let playBoard = gameBoard.getBoard();
+    let gameOver = false;
+    const getGameOver = () => gameOver;
 
     getTurn = () => currentTurn;
 
@@ -32,8 +36,6 @@ const gameController = (function(){
             currentTurn = players[0];
         }
     }
-
-    let playBoard = gameBoard.getBoard();
 
     const winningPositions = [
         //horizontal
@@ -50,6 +52,7 @@ const gameController = (function(){
         
     ];
 
+
     const checkWin = () => {
         for(const position of winningPositions){
             if(playBoard[position[0]] != "" && 
@@ -61,21 +64,32 @@ const gameController = (function(){
         }
     }
 
+    const checkTie = () => {
+        if(turnCount === 9 && checkWin != true){
+            return true;
+        }
+    }
 
     const mark = (space) => {
         playBoard[space] = currentTurn.symbol;
+        turnCount++;
         if(checkWin() === true){
-            console.log(currentTurn.name+ " WON!!!!");
-            gameBoard.clearBoard();
-            playBoard = gameBoard.getBoard();
+            gameOver = checkWin();
+        }else if(checkTie() === true){
+            gameOver = checkTie();
         }else{
             changeTurn();
-            return currentTurn;
         }
     }
     
+    const resetGame = () => {
+        currentTurn = players[0];
+        playBoard = gameBoard.getBoard();
+        turnCount = 0;
+        displayController.resetDisplay();
+    }
 
-    return {players, mark, getTurn};
+    return {players, mark, getTurn, getGameOver, resetGame};
 })();
 
 const displayController = (function(){
@@ -83,18 +97,28 @@ const displayController = (function(){
     const displayArray = document.querySelectorAll(".game-space");
 
     const displayMark = (space) => {
-        if(space.textContent === ""){
+        if(space.textContent === "" && gameController.getGameOver() === false){
             space.textContent = gameController.getTurn().symbol;
+             //adds mark to playBoard array at div index #
             gameController.mark(space.dataset.index);
         }
 
     }
 
+    //add event listener to all spaces
     for(const item of displayArray){
         item.addEventListener("click", () =>{
             displayMark(item);
         });
     }
 
-    return {displayArray};
+    const resetDisplay = () => {
+        for(const item of displayArray){
+            item.textContent = "";
+        }
+    }
+
+
+
+    return {resetDisplay};
 })();

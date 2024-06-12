@@ -37,7 +37,7 @@ const gameController = (function(){
         }
     }
 
-    const winningPositions = [
+    const winningCombos = [
         //horizontal
         [0,1,2],
         [3,4,5],
@@ -52,12 +52,16 @@ const gameController = (function(){
         
     ];
 
+    //used to mark spaces on DOM
+    let winningPosition = ["","",""];
+    const getWin = () => winningPosition;
 
     const checkWin = () => {
-        for(const position of winningPositions){
+        for(const position of winningCombos){
             if(playBoard[position[0]] != "" && 
             (playBoard[position[0]] === playBoard[position[1]] && 
             playBoard[position[0]] === playBoard[position[2]])){
+                winningPosition = position;
                 return true;
             }
 
@@ -75,6 +79,7 @@ const gameController = (function(){
         turnCount++;
         if(checkWin() === true){
             gameOver = checkWin();
+            displayController.displayWin();
         }else if(checkTie() === true){
             gameOver = checkTie();
         }else{
@@ -84,12 +89,15 @@ const gameController = (function(){
     
     const resetGame = () => {
         currentTurn = players[0];
+        gameBoard.clearBoard();
         playBoard = gameBoard.getBoard();
         turnCount = 0;
         displayController.resetDisplay();
+        gameOver = false;
+        winningPosition = ["","",""];
     }
 
-    return {players, mark, getTurn, getGameOver, resetGame};
+    return {players, mark, getTurn, getGameOver, resetGame, getWin};
 })();
 
 const displayController = (function(){
@@ -115,10 +123,18 @@ const displayController = (function(){
     const resetDisplay = () => {
         for(const item of displayArray){
             item.textContent = "";
+            item.classList.remove("won");
+        }
+    }
+
+    displayWin = () => {
+        const winningPosition = gameController.getWin();
+        for(position of winningPosition){
+            displayArray[position].classList.add("won");
         }
     }
 
 
 
-    return {resetDisplay};
+    return {resetDisplay, displayWin};
 })();

@@ -36,7 +36,7 @@ h1 {
     font-size: 64px;
 }
 
-.score-container {
+.name-container {
     display: flex;
     justify-content: space-between;
     padding-left: 100px;
@@ -91,6 +91,10 @@ h1 {
     width: 20vh;
     height: 20vh;
 
+}
+
+.won {
+    background-color: rgba(146, 103, 51, 0.500);
 }
 
 #top-left {
